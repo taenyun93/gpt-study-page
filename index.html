@@ -1,12 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-	<meta charset="UTF-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Portfolio</title>
+  <title>Chatbot</title>
 </head>
 <body>
-  <p>Hello, World!</p>
+  <div id="chat-box">
+    <!-- Chat messages will go here -->
+  </div>
+  <input id="user-input" type="text" placeholder="Type your message...">
+  <button onclick="sendMessage()">Send</button>
+
+  <script>
+    async function sendMessage() {
+      const userInput = document.getElementById("user-input").value;
+      const userID = "exampleUserID"; // Replace this with the userID from URL
+
+      const response = await fetch('http://localhost:5000/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: userInput, user_id: userID })
+      });
+
+      const data = await response.json();
+      const chatBox = document.getElementById("chat-box");
+      chatBox.innerHTML += `<p>User: ${userInput}</p>`;
+      chatBox.innerHTML += `<p>Bot: ${data.bot_response}</p>`;
+    }
+  </script>
 </body>
 </html>
