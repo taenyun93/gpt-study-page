@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+</head>
+<body>
+    <div id="chat-box"></div>
+    <input id="user-input" placeholder="Type your message">
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+        var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+        socket.on('new_message', function(data) {
+            const chatBox = document.getElementById('chat-box');
+            chatBox.innerHTML += `<p><strong>${data.user}:</strong> ${data.message}</p>`;
+        });
+
+        function sendMessage() {
+            const apiKey = "{{ api_key }}";
+            const password = "{{ password }}"; // You can use this variable if needed
+            const userInput = document.getElementById('user-input').value;
+
+            socket.emit('send_message', {apiKey: apiKey, userInput: userInput});
+
+            const chatBox = document.getElementById('chat-box');
+            chatBox.innerHTML += `<p><strong>You:</strong> ${userInput}</p>`;
+        }
+    </script>
+</body>
+</html>
